@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'gallery_screen.dart';
 import 'artist_screen.dart';
+import '../data/artwork_data.dart';
+import '../models/artwork.dart';
 import '../widgets/likha_top_bar.dart';
 import '../util/image_helper.dart';
 
@@ -52,74 +54,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<Map<String, dynamic>> recommended = [
-    {
-      "title": "Luzon Lights",
-      "artist": "Juan Dela Cruz",
-      "image": "assets/art1.jpg",
-      "description": "A brilliant display of lights across Luzon's skyline.",
-      "liked": false,
-      "followed": false,
-    },
-    {
-      "title": "Mindanao Magic",
-      "artist": "Maria Santos",
-      "image": "assets/art2.jpg",
-      "description": "A vivid cultural depiction of Mindanao's heritage.",
-      "liked": false,
-      "followed": false,
-    },
-    {
-      "title": "Metro Manila Vibes",
-      "artist": "Alex Rivera",
-      "image": "assets/art3.jpg",
-      "description": "Captures the rush, light, and chaos of urban living.",
-      "liked": false,
-      "followed": false,
-    },
-    {
-      "title": "Visayas View",
-      "artist": "Liza Gomez",
-      "image": "assets/art4.jpg",
-      "description": "A peaceful seascape painting of the Visayan islands.",
-      "liked": false,
-      "followed": false,
-    },
-    {
-      "title": "Abstract Dream",
-      "artist": "Carlos Ramos",
-      "image": "assets/art5.jpg",
-      "description": "A colorful expression of subconscious thoughts.",
-      "liked": false,
-      "followed": false,
-    },
-    {
-      "title": "Brush Strokes",
-      "artist": "Danilo Cruz",
-      "image": "assets/art6.jpg",
-      "description": "A bold experiment in color and motion.",
-      "liked": false,
-      "followed": false,
-    },
-    {
-      "title": "Sunset Silhouette",
-      "artist": "Ella Navarro",
-      "image": "assets/art7.jpg",
-      "description": "A sunset captured through expressive brushwork.",
-      "liked": false,
-      "followed": false,
-    },
-    {
-      "title": "Heart of the Barrio",
-      "artist": "Juan Dela Cruz",
-      "image": "assets/art8.jpg",
-      "description": "A mural celebrating Filipino resilience.",
-      "liked": false,
-      "followed": false,
-    },
-  ];
+  final List<Artwork> recommended = ArtworkData.artworks.take(8).toList();
 
-  Map<String, dynamic>? expandedCard;
+  Artwork? expandedCard;
   bool showExpanded = false;
   int? tappedIndex;
 
@@ -145,13 +82,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _toggleLike(int index) {
     setState(() {
-      recommended[index]["liked"] = !recommended[index]["liked"];
+      recommended[index].liked = !recommended[index].liked;
     });
   }
 
   void _toggleFollow(int index) {
     setState(() {
-      recommended[index]["followed"] = !recommended[index]["followed"];
+      recommended[index].followed = !recommended[index].followed;
     });
   }
 
@@ -233,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 12),
                   ...recommended.asMap().entries.map((entry) {
                     final index = entry.key;
-                    final item = entry.value;
+                    final art = entry.value;
                     return GestureDetector(
                       onTap: () => _expandCard(index),
                       child: Container(
@@ -245,16 +182,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         child: Column(
                           children: [
-                            buildSafeImage(item["image"], height: 180),
+                            buildSafeImage(art.imagePath, height: 180),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(item["title"], style: const TextStyle(color: Colors.white)),
+                                  Text(art.title, style: const TextStyle(color: Colors.white)),
                                   IconButton(
                                     icon: Icon(
-                                      item["liked"] ? Icons.favorite : Icons.favorite_border,
+                                      art.liked ? Icons.favorite : Icons.favorite_border,
                                       color: Colors.redAccent,
                                     ),
                                     onPressed: () => _toggleLike(index),
@@ -309,12 +246,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Expanded(
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(12),
-                                        child: buildSafeImage(expandedCard!["image"]),
+                                        child: buildSafeImage(expandedCard!.imagePath),
                                       ),
                                     ),
                                     const SizedBox(height: 12),
                                     Text(
-                                      expandedCard!["title"],
+                                      expandedCard!.title,
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 20,
@@ -322,12 +259,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                     Text(
-                                      "by ${expandedCard!["artist"]}",
+                                      "by ${expandedCard!.artistName}",
                                       style: const TextStyle(color: Colors.white70, fontSize: 14),
                                     ),
                                     const SizedBox(height: 10),
                                     Text(
-                                      expandedCard!["description"],
+                                      expandedCard!.description,
                                       style: const TextStyle(
                                         color: Colors.white60,
                                         fontSize: 13,
@@ -341,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       children: [
                                         IconButton(
                                           icon: Icon(
-                                            expandedCard!["liked"] ? Icons.favorite : Icons.favorite_border,
+                                            expandedCard!.liked ? Icons.favorite : Icons.favorite_border,
                                             color: Colors.redAccent,
                                           ),
                                           onPressed: () => _toggleLike(tappedIndex!),
@@ -349,11 +286,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                         const SizedBox(width: 8),
                                         ElevatedButton.icon(
                                           icon: Icon(
-                                            expandedCard!["followed"] ? Icons.check : Icons.person_add,
+                                            expandedCard!.followed ? Icons.check : Icons.person_add,
                                             color: Colors.white,
                                           ),
                                           label: Text(
-                                            expandedCard!["followed"] ? "Following" : "Follow",
+                                            expandedCard!.followed ? "Following" : "Follow",
                                             style: const TextStyle(color: Colors.white),
                                           ),
                                           style: ElevatedButton.styleFrom(

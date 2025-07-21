@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/welcome_screen.dart';
+import 'models/artwork.dart';
+import 'models/user_profile.dart';
 
 void main() {
   runApp(const LikhaApp());
