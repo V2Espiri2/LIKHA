@@ -51,7 +51,7 @@ class WelcomeScreen extends StatelessWidget {
                   _OutlinedMenuButton(
                     label: 'SIGN UP',
                     onTap: () {
-                      // TODO: add sign‑up screen later
+
                     },
                   ),
                 ],

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'screens/welcome_screen.dart';
-import 'models/artwork.dart';
-import 'models/user_profile.dart';
-
 void main() {
   runApp(const LikhaApp());
 }
@@ -20,7 +17,7 @@ class LikhaApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF2C2F38),
         textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)),
       ),
-      home: const WelcomeScreen(), // Start here
+      home: const WelcomeScreen(), 
     );
   }
 }
